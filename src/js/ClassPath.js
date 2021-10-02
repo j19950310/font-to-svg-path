@@ -8,7 +8,7 @@ export default class Path {
             x: 0,
             y: 0
         }
-        Object.assign(this, { nodes, p5, currentPoint, initPoint })
+        Object.assign(this, { nodes, p5, currentPoint, initPoint})
     }
     update() {
         this.nodes.forEach((node) => {
@@ -84,28 +84,29 @@ export default class Path {
         } = this.initPoint
         this.drawLine(x1, y1, x2, y2)
     }
-    drawBezier(x1, y1, x2, y2, x3, y3, x4, y4) {
-        const rx = Math.random() * 10
-        const ry = Math.random() * 10
-        this.p5.bezier(
-            x1 + rx,
-            y1 + ry,
-            x2 + rx,
-            y2 + ry,
-            x3 + rx,
-            y3 + ry,
-            x4 + rx,
-            y4 + ry
-        )
+    drawBezier(_x1, _y1, _x2, _y2, _x3, _y3, _x4, _y4) {
+        const {x: x1, y: y1} = this.aroundCenterPoint(_x1, _y1, 100)
+        const {x: x2, y: y2} = this.aroundCenterPoint(_x2, _y2, 100)
+        const {x: x3, y: y3} = this.aroundCenterPoint(_x3, _y3, 100)
+        const {x: x4, y: y4} = this.aroundCenterPoint(_x4, _y4, 100)
+        this.p5.bezier( x1, y1, x2, y2, x3, y3, x4, y4)
     }
-    drawLine(x1, y1, x2, y2) {
-        const rx = Math.random() * 10
-        const ry = Math.random() * 10
-        this.p5.line(
-            x1 + rx,
-            y1 + ry,
-            x2 + rx,
-            y2 + ry
-        )
+    drawLine(_x1, _y1, _x2, _y2) {
+        const {x: x1, y: y1} = this.aroundCenterPoint(_x1, _y1, 100)
+        const {x: x2, y: y2} = this.aroundCenterPoint(_x2, _y2, 100)
+        this.p5.line(x1, y1, x2, y2)
+    }
+    aroundCenterPoint(x, y, r) {
+        const { mouseX, mouseY } = this.p5
+        const mouse = this.p5.createVector(mouseX, mouseY)
+        const center = this.p5.createVector(x, y)
+        const dist = center.dist(mouse)
+        if (dist < r) {
+            center.sub(mouse)
+            center.mult(r/dist)
+            x += center.x
+            y += center.y
+        }
+        return { x, y }
     }
 }
